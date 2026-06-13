@@ -20,8 +20,11 @@ from pathlib import Path
 
 import anthropic
 import requests
+from dotenv import load_dotenv
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
+
+load_dotenv()
 
 app = Flask(__name__)
 
