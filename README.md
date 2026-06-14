@@ -1,17 +1,84 @@
 # agent_sms — Personal SMS-to-Claude Assistant
 
-Personal SMS-to-Claude AI assistant. Sends and receives text messages via Twilio, forwarding them to the Claude API.
+A personal text-message bridge between [Twilio](https://www.twilio.com/) and the
+[Claude API](https://docs.anthropic.com/). Text your Twilio number and Claude
+texts you back — over SMS or MMS, with per-conversation memory and image
+understanding.
 
-## Privacy Policy
+## Features
 
-This service is for personal use only by the account owner (John Guittar).
+- **Two-way SMS/MMS** — receive texts (and photos) and reply automatically via Twilio.
+- **Image understanding** — incoming MMS photos are forwarded to Claude, which can describe them or answer questions about them.
+- **Conversational memory** — history is kept per phone number (last 10 exchanges) so Claude remembers context across messages.
+- **One-shot sender** — `sms.py` sends a single outbound text from the command line.
 
-- **No data sharing**: Phone numbers and message content are never sold, shared, or disclosed to any third party.
-- **Message frequency**: Messages are sent only in direct response to messages initiated by the user.
-- **Data storage**: Conversation history is stored locally on the user's own machine and is not transmitted to any third party beyond the Claude API (Anthropic) for response generation.
-- **Message and data rates may apply** when sending and receiving SMS/MMS messages.
-- **Opt-out**: Reply STOP at any time to stop receiving messages.
+## Components
 
-## Terms and Conditions
+| File | Purpose |
+|------|---------|
+| `server.py` | Flask webhook (`POST /sms`) that bridges incoming Twilio messages to Claude and replies via TwiML. |
+| `sms.py` | Standalone CLI script to send a single SMS. |
+| `.env.example` | Template for required credentials. |
 
-This service is operated solely for personal use by the account owner. It is not a commercial service and has no end users other than the operator. Use of this service is governed by Twilio's and Anthropic's respective terms of service.
+## Requirements
+
+- Python 3.10+
+- A Twilio account with an SMS-capable phone number
+- An Anthropic API key
+
+## Setup
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env      # then fill in your credentials
+```
+
+Set the following in `.env`:
+
+| Variable | Description |
+|----------|-------------|
+| `TWILIO_ACCOUNT_SID` | Your Twilio Account SID |
+| `TWILIO_AUTH_TOKEN` | Your Twilio Auth Token |
+| `TWILIO_FROM_NUMBER` | Your Twilio phone number, e.g. `+15550001234` |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key |
+| `PORT` | Port for the webhook server (default `5000`) |
+
+## Usage
+
+### Run the two-way bridge
+
+```bash
+python server.py
+```
+
+Then point your Twilio number's **Messaging** webhook to your server's public URL:
+
+```
+https://<your-host>/sms      (HTTP POST)
+```
+
+For local development, expose the port with a tunnel (e.g. `ngrok http 5000`)
+and use the resulting HTTPS URL.
+
+Now text your Twilio number — Claude will reply, remembering the conversation
+and understanding any photos you send.
+
+### Send a one-off text
+
+```bash
+python sms.py "+15555550100" "Hello from Claude!"
+```
+
+## How it works
+
+Incoming messages hit `POST /sms`. The server downloads any image attachments
+from Twilio, assembles the new turn plus stored history into a Claude API call
+(`claude-sonnet-4-6`), and returns the reply as TwiML so Twilio sends it back
+as an SMS. Conversation history is stored locally in `conversations.json`
+(git-ignored); base64 image data is never persisted — only a placeholder is
+stored in history.
+
+## Privacy & registration
+
+This is a personal-use service. The privacy policy and terms required for
+A2P 10DLC / SMS number registration live in [TERMS.md](TERMS.md).
