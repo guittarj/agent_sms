@@ -69,6 +69,38 @@ and understanding any photos you send.
 python sms.py "+15555550100" "Hello from Claude!"
 ```
 
+## Deployment
+
+The webhook needs a public HTTPS URL. Two common options:
+
+### Local (testing) — ngrok
+
+```bash
+python server.py            # runs on :5000
+ngrok http 5000            # gives you an https://… URL
+```
+
+Point the Twilio number's Messaging webhook at `https://<ngrok-id>.ngrok.io/sms`.
+
+### Hosted — Render / Railway / Heroku / Docker
+
+A `Procfile` and `Dockerfile` are included; both start the app with gunicorn
+(single worker, so the file-based conversation store stays consistent).
+
+```bash
+# Docker
+docker build -t agent_sms .
+docker run -p 5000:5000 --env-file .env agent_sms
+```
+
+On a PaaS, set the same environment variables (`TWILIO_*`, `ANTHROPIC_API_KEY`)
+in the dashboard — `PORT` is supplied by the platform — then point the Twilio
+webhook at `https://<your-app>/sms`.
+
+> Note: `conversations.json` is local to the container. On platforms with
+> ephemeral disks it resets on redeploy; attach a persistent volume if you want
+> history to survive restarts.
+
 ## How it works
 
 Incoming messages hit `POST /sms`. The server downloads any image attachments
