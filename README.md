@@ -1,4 +1,4 @@
-# agent_sandbox
+# agent_sms — Personal SMS-to-Claude Assistant
 
 Personal SMS-to-Claude AI assistant. Sends and receives text messages via Twilio, forwarding them to the Claude API.
 
