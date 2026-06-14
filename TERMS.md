@@ -6,6 +6,7 @@ These terms are provided for A2P 10DLC / SMS number registration.
 
 This service is for personal use only by the account owner (John Guittar).
 
+- **Opt-in / consent**: The sole recipient is the account owner, who consents to receive messages by initiating contact with the service.
 - **No data sharing**: Phone numbers and message content are never sold, shared, or disclosed to any third party.
 - **Message frequency**: Messages are sent only in direct response to messages initiated by the user.
 - **Data storage**: Conversation history is stored locally on the user's own machine and is not transmitted to any third party beyond the Claude API (Anthropic) for response generation.
