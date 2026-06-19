@@ -6,16 +6,18 @@ A2P 10DLC / SMS number registration.
 ## Service description
 
 agent_sms is an application-to-person (A2P) conversational assistant. A software
-application, integrated with the Anthropic Claude API, receives inbound SMS/MMS
-messages from a subscribed user and generates automated replies that the
-application sends back to that user's mobile number. All outbound messages are
-produced and sent programmatically by the application.
+application, integrated with the Anthropic Claude API, lets a small group of
+enrolled users (the operator and invited friends and family) text a shared
+service number. The application receives each inbound SMS/MMS message and
+generates an automated reply that it sends back to the user who messaged it. All
+outbound messages are produced and sent programmatically by the application.
 
 ## Privacy Policy
 
-- **Consent / opt-in**: Users receive messages only after opting in by enrolling
-  their mobile number and initiating contact with the application. No numbers are
-  messaged without prior consent.
+- **Consent / opt-in**: Each user is enrolled only with their express consent.
+  A person opts in by asking the operator to add their mobile number, then
+  initiating contact by texting the service number. No number is messaged
+  without that prior opt-in.
 - **No data sharing**: Mobile numbers and message content are never sold, rented,
   or shared with third parties for marketing or any unrelated purpose. Message
   content is transmitted only to the Anthropic Claude API for the sole purpose of
